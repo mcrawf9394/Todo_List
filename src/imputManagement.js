@@ -150,7 +150,27 @@ const taskDisplay = {
                 projectStorage.switch(item)
             }
         })
-        taskContainer.append(taskName, taskDescription, taskDate,taskPriority, checkBoxCompletionLabel, checkBoxCompletion)
+        let deleteButton = document.createElement('button')
+        deleteButton.textContent = "Delete"
+        deleteButton.type = "submit"
+        deleteButton.addEventListener('click', () => {
+        let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
+        if (currentProject.tasks.indexOf(item)) {
+            let index = currentProject.completedTasks.indexOf(item)
+            currentProject.completedTasks.splice(index, 1)
+        }
+        else {
+            let index = currentProject.tasks.indexOf(item)
+            currentProject.tasks.splice(index, 1)
+        }
+        while (document.getElementById('taskContainer')) {
+            let container = document.getElementById('taskContainer')
+            container.remove()
+            }
+        currentProject.tasks.forEach(taskDisplay.display)
+        currentProject.completedTasks.forEach(taskDisplay.display)
+    })
+        taskContainer.append(taskName, taskDescription, taskDate,taskPriority, checkBoxCompletionLabel, checkBoxCompletion, deleteButton)
         container.appendChild(taskContainer)
     }
 }
