@@ -40,7 +40,8 @@ class tasks {
             taskName: document.getElementById('taskName').value,
             description: document.getElementById('description').value,
             date: document.getElementById('date').value,
-            priority: this.checkPriority()
+            priority: this.checkPriority(),
+            completed: false
         }
         return task
     }
@@ -64,8 +65,8 @@ const projectStorage = {
             let task = new tasks ()
             let currentProject = this.projectArray.find(this.findingProject)
             currentProject.tasks.push(task)
-            console.log(currentProject.tasks)
             currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
             this.taskPopUp.close()
         })
     },
@@ -77,6 +78,42 @@ const projectStorage = {
         this.projectArray.push(project)
         const taskButton = taskButtons.taskButton()
         return taskButton
+    },
+    trueTask (task) {
+        return task.completed == true
+    },
+    falseTask (task) {
+        return task.completed == false
+    },
+    switch (item) {
+        let currentProject = this.projectArray.find(this.findingProject)
+        let currentTask
+        if (item.completed == true) {
+            currentTask = currentProject.tasks.find(this.trueTask)
+            let index = currentProject.tasks.indexOf(currentTask)
+            currentProject.tasks.splice(index, 1)
+            currentProject.completedTasks.push(currentTask)
+            while (document.getElementById('taskContainer')) {
+                let container = document.getElementById('taskContainer')
+                container.remove()
+                }
+            currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
+            return
+        }
+        else {
+            currentTask = currentProject.completedTasks.find(this.falseTask)
+            let index = currentProject.completedTasks.indexOf(currentTask)
+            currentProject.completedTasks.splice(index, 1)
+            currentProject.tasks.push(currentTask)
+            while (document.getElementById('taskContainer')) {
+                let container = document.getElementById('taskContainer')
+                container.remove()
+                }
+            currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
+            return
+        }
     }
 }
 projectStorage.buttonEvents()
@@ -93,7 +130,27 @@ const taskDisplay = {
         let container = document.getElementById('taskArea')
         let taskContainer = document.createElement('div')
         taskContainer.id = "taskContainer"
-        taskContainer.append(taskName, taskDescription, taskDate,taskPriority)
+        let checkBoxCompletionLabel = document.createElement('label')
+        checkBoxCompletionLabel.textContent = "Completed?"
+        let checkBoxCompletion = document.createElement('input')
+        checkBoxCompletion.type = "checkbox"
+        if (item.completed == true){
+            checkBoxCompletion.checked = true
+        }
+        else {
+            checkBoxCompletion.checked = false
+        }
+        checkBoxCompletion.addEventListener('click', () => {
+            if (checkBoxCompletion.checked == true) {
+                item.completed = true
+                projectStorage.switch(item)
+            }
+            else {
+                item.completed = false
+                projectStorage.switch(item)
+            }
+        })
+        taskContainer.append(taskName, taskDescription, taskDate,taskPriority, checkBoxCompletionLabel, checkBoxCompletion)
         container.appendChild(taskContainer)
     }
 }

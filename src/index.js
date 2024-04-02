@@ -39,6 +39,7 @@ const display = {
             this.currentProject = projectTab.textContent
             let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
             currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
         })
         this.projectForm.close()
     }
