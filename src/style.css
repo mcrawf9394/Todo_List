@@ -2,7 +2,7 @@ html, body {
     min-height: 100%;
     min-width: 100%;
 }
-.projectTabs {
+.projectTabsContainer {
     height: 100%;
     width: 20%;
 }
