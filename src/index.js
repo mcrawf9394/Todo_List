@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import './style.css';
-import projectStorage from './imputManagement.js';
+import projectStorage, { taskButtons } from './imputManagement.js';
 import {taskDisplay} from './imputManagement.js';
+import populateStorage from './localStorage.js';
+import { getStorage } from './localStorage.js';
 const elements = {
     projectList: document.getElementById('projectContainer'),
     taskArea: document.getElementById('taskArea'),
@@ -18,30 +20,35 @@ const display = {
     cancel () {
         this.projectForm.close()
     },
-    addProject () {
+    intial () {
+        let projects = getStorage()
+        projectStorage.projectArray = getStorage ()
+        projects.forEach(this.addProject)
+    },
+    addProject (project) {
         const container = document.getElementById('projectContainer')
-        projectName = document.getElementById('projectName').value
+        projectName = project.name
         const projectTab = document.createElement('button')
         projectTab.className = "projectTabs"
         projectTab.textContent = projectName
+        const addTask = taskButtons.taskButton()
         container.appendChild(projectTab)
-        const addTask = projectStorage.addingProject(projectName)
         const title = document.createElement('h2')
         title.textContent = projectName
         projectTab.addEventListener('click', () => {
-            if (this.currentProject != projectTab.textContent){
+            if (display.currentProject != projectTab.textContent){
                 while (elements.taskArea.firstChild) {
                 elements.taskArea.removeChild(elements.taskArea.firstChild)
             }
                 elements.taskArea.appendChild(title)
                 elements.taskArea.appendChild (addTask)
             }
-            this.currentProject = projectTab.textContent
+            display.currentProject = projectTab.textContent
             let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
         })
-        this.projectForm.close()
+        document.querySelector('dialog').close()
     }
 }
 export default display; 
@@ -52,8 +59,8 @@ const reponsivebuttons = {
             display.addProjectButtonHandling()
         })
         elements.createProject.addEventListener('click', (userEntry) => {
-            userEntry.preventDefault() 
-            display.addProject ()
+            userEntry.preventDefault()
+            projectStorage.addingProject()
         })
         elements.cancel.addEventListener('click', (userEntry) => {
             userEntry.preventDefault()
@@ -62,3 +69,5 @@ const reponsivebuttons = {
     }
 }
 reponsivebuttons.clickResponses()
+display.intial()
+console.log(JSON.parse(localStorage.getItem("projects")))

@@ -1,4 +1,5 @@
 import display from "./index.js"
+import populateStorage from "./localStorage.js"
 const taskButtons = {
     taskPopUp: document.getElementById('taskAddition'),
     taskButton (projectName) {
@@ -14,9 +15,9 @@ const taskButtons = {
     }
 }
 class projects {
-    constructor (projectName) {
+    constructor () {
         const project = {
-            name: projectName,
+            name: document.getElementById('projectName').value,
             tasks: [],
             completedTasks: [],
         }
@@ -51,6 +52,10 @@ const projectStorage = {
     add: document.getElementById('addTaskButton'),
     taskPopUp: document.getElementById('taskAddition'),
     projectArray: [],
+    recallProjects () {
+      let test = JSON.parse(localStorage.getItem.projects)
+      this.projectArray = test  
+    },
     buttonEvents () {
         this.cancel.addEventListener('click', (click) =>{
             this.taskPopUp.close()
@@ -65,6 +70,7 @@ const projectStorage = {
             let task = new tasks ()
             let currentProject = this.projectArray.find(this.findingProject)
             currentProject.tasks.push(task)
+            currentProject.tasks.onchange = populateStorage()
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
             this.taskPopUp.close()
@@ -73,11 +79,17 @@ const projectStorage = {
     findingProject (project){
         return project.name == display.currentProject
     },
-    addingProject (projectName) {
-        let project = new projects (projectName)
+    addingProject () {
+        let project = new projects ()
         this.projectArray.push(project)
-        const taskButton = taskButtons.taskButton()
-        return taskButton
+        this.projectArray.onchange = populateStorage()
+        taskButtons.taskButton()
+        console.log(this.projectArray)
+        while (document.getElementById('projectContainer').firstChild) {
+            document.getElementById('projectContainer').removeChild(document.getElementById('projectContainer').firstChild)
+        }
+        this.projectArray.forEach(display.addProject)
+        return
     },
     trueTask (task) {
         return task.completed == true
@@ -99,6 +111,7 @@ const projectStorage = {
                 }
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
+            currentProject.tasks.onchange = populateStorage()
             return
         }
         else {
@@ -112,6 +125,7 @@ const projectStorage = {
                 }
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.onchange = populateStorage()
             return
         }
     }
@@ -176,3 +190,4 @@ const taskDisplay = {
 }
 export default projectStorage;
 export  {taskDisplay};
+export {taskButtons};
