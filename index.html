@@ -16,7 +16,7 @@
                 </div>
             </form>
         </dialog>
-        <div class="projectTabs">
+        <div class="projectTabsContainer">
             <h1>Todo List</h1>
             <div id="projectContainer">
 
@@ -26,5 +26,26 @@
         <div id="taskArea">
 
         </div>
+        <dialog id="taskAddition">
+            <form>
+                <label>Task Name</label>
+                <input required type="text" minlength="1" id="taskName">
+                <label>Description</label>
+                <input required type="text" minlength="1" id="description">
+                <label>Due Date</label>
+                <input required type="date" minlength="8" id="date">
+                <label>Priority</label>
+                <input required type="radio" id="highPriority" name="priority" value="highPriority">
+                <label>High Priority</label>
+                <input required type="radio" id="moderatePriority" name="priority" value="moderatePriority">
+                <label>Moderate Priority</label>
+                <input required type="radio" id="lowPriority" name="priority" value="lowPriority">
+                <label>Low Priority</label>
+                <div id="taskButtons">
+                    <button type="reset" id="cancelTaskAddition">Cancel</button>
+                    <button type="submit" id="addTaskButton">Add Task</button>
+                </div>
+            </form>
+        </dialog>
     </div>
 </html>
