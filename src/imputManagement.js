@@ -97,14 +97,39 @@ const projectStorage = {
             this.taskPopUp.close()
         })
         this.cancelTaskEdit.addEventListener('click', (click) => {
-            console.log(this.editTask.value)
             this.editTaskPopUp.close()
             click.preventDefault()
+        }),
+        this.editTask.addEventListener('click', (click) => {
+            click.preventDefault()
+            let currentProject = this.projectArray.find(this.findingProject)
+            console.log(currentProject)
+            if (currentProject.tasks.find(this.findingTask)) {
+                let item = currentProject.tasks.find(this.findingTask)
+                item.taskName = document.getElementById("editTaskName").value
+                item.description = document.getElementById("editDescription").value
+                item.date = document.getElementById("editDate").value
+                item.priority = projectStorage.editPriority()
+            }
+            else {
+                let item = currentProject.completedTasks.find(this.findingTask)
+                item.taskName = document.getElementById("editTaskName").value
+                item.description = document.getElementById("editDescription").value
+                item.date = document.getElementById("editDate").value
+                item.priority = projectStorage.editPriority()
+            }
+            while (document.getElementById('taskContainer')) {
+                let container = document.getElementById('taskContainer')
+                container.remove()
+            }
+            currentProject.onchange = populateStorage()
+            currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
+            projectStorage.editTaskPopUp.close()
         })
     },
     findingTask (task) {
-        console.log(projectStorage.currentTask)
-        return task.name == projectStorage.currentTask
+        return task.taskName == projectStorage.currentTask
     },
     findingProject (project){
         return project.name == display.currentProject
@@ -114,7 +139,6 @@ const projectStorage = {
         this.projectArray.push(project)
         this.projectArray.onchange = populateStorage()
         taskButtons.taskButton()
-        console.log(this.projectArray)
         while (document.getElementById('projectContainer').firstChild) {
             document.getElementById('projectContainer').removeChild(document.getElementById('projectContainer').firstChild)
         }
@@ -196,7 +220,9 @@ const taskDisplay = {
         })
         let editButton = document.createElement('button')
         editButton.textContent = "Edit Task"
-        editButton.addEventListener('click', () => {
+        editButton.value = item.taskName
+        editButton.addEventListener('click', () => { 
+            projectStorage.currentTask = editButton.value
             const editTask = document.getElementById('editTask')
             const nameForm = document.getElementById("editTaskName")
             nameForm.value = item.taskName
@@ -214,30 +240,6 @@ const taskDisplay = {
                 document.getElementById('editLowPriority').checked = true
             }
             editTask.showModal()
-        })
-        projectStorage.editTask.addEventListener('click', () => {
-            let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
-            if (projectStorage.falseTask(item)) {
-            let index = currentProject.tasks.indexOf(item)
-            let currentTask = currentProject.tasks[index]
-            currentTask.taskName = document.getElementById("editTaskName").value
-            currentTask.description = document.getElementById("editDescription").value
-            currentTask.date = document.getElementById("editDate").value
-            currentTask.priority = projectStorage.editPriority()
-            currentProject.tasks.onchange = populateStorage()
-            }
-            else {
-                let index = currentProject.completedTasks.indexOf(item)
-                let currentTask = currentProject.completedTasks[index]
-                currentTask.taskName = document.getElementById("editTaskName").value
-                currentTask.description = document.getElementById("editDescription").value
-                currentTask.date = document.getElementById("editDate").value
-                currentTask.priority = projectStorage.editPriority()
-                currentProject.completedTasks.onchange = populateStorage()
-            }
-            currentProject.tasks.forEach(taskDisplay.display)
-            currentProject.completedTasks.forEach(taskDisplay.display)
-            projectStorage.editTaskPopUp.close()
         })
         let deleteButton = document.createElement('button')
         deleteButton.textContent = "Delete"
