@@ -51,10 +51,31 @@ const projectStorage = {
     cancel: document.getElementById('cancelTaskAddition'),
     add: document.getElementById('addTaskButton'),
     taskPopUp: document.getElementById('taskAddition'),
+    cancelTaskEdit: document.getElementById('cancelTaskEdit'),
+    editTask: document.getElementById('editTaskButton'),
+    editTaskPopUp: document.getElementById('editTask'),
     projectArray: [],
+    currentTask: "",
+    editPriority () {
+        if (document.getElementById('editHighPriority').checked == true) {
+            return document.getElementById('editHighPriority').value
+        }
+        else if (document.getElementById('editModeratePriority').checked == true) {
+            return document.getElementById('editModeratePriority').value
+        }
+        else {
+            return document.getElementById('editLowPriority').value
+        }
+    },
     recallProjects () {
       let test = JSON.parse(localStorage.getItem.projects)
       this.projectArray = test  
+    },
+    projectDeletion () {
+        let currentProject = this.projectArray.find(this.findingProject)
+        let index = this.projectArray.indexOf(currentProject)
+        this.projectArray.splice(index, 1)
+        this.projectArray.onchange = populateStorage()
     },
     buttonEvents () {
         this.cancel.addEventListener('click', (click) =>{
@@ -75,6 +96,15 @@ const projectStorage = {
             currentProject.completedTasks.forEach(taskDisplay.display)
             this.taskPopUp.close()
         })
+        this.cancelTaskEdit.addEventListener('click', (click) => {
+            console.log(this.editTask.value)
+            this.editTaskPopUp.close()
+            click.preventDefault()
+        })
+    },
+    findingTask (task) {
+        console.log(projectStorage.currentTask)
+        return task.name == projectStorage.currentTask
     },
     findingProject (project){
         return project.name == display.currentProject
@@ -164,6 +194,51 @@ const taskDisplay = {
                 projectStorage.switch(item)
             }
         })
+        let editButton = document.createElement('button')
+        editButton.textContent = "Edit Task"
+        editButton.addEventListener('click', () => {
+            const editTask = document.getElementById('editTask')
+            const nameForm = document.getElementById("editTaskName")
+            nameForm.value = item.taskName
+            const description = document.getElementById("editDescription")
+            description.value = item.description
+            const date = document.getElementById("editDate")
+            date.value = item.date
+            if (item.priority ==  "High Priority") {
+                document.getElementById('editHighPriority').checked = true
+            }
+            else if (item.priority == "Moderate Priority") {
+                document.getElementById('editModeratePriority').checked = true
+            }
+            else {
+                document.getElementById('editLowPriority').checked = true
+            }
+            editTask.showModal()
+        })
+        projectStorage.editTask.addEventListener('click', () => {
+            let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
+            if (projectStorage.falseTask(item)) {
+            let index = currentProject.tasks.indexOf(item)
+            let currentTask = currentProject.tasks[index]
+            currentTask.taskName = document.getElementById("editTaskName").value
+            currentTask.description = document.getElementById("editDescription").value
+            currentTask.date = document.getElementById("editDate").value
+            currentTask.priority = projectStorage.editPriority()
+            currentProject.tasks.onchange = populateStorage()
+            }
+            else {
+                let index = currentProject.completedTasks.indexOf(item)
+                let currentTask = currentProject.completedTasks[index]
+                currentTask.taskName = document.getElementById("editTaskName").value
+                currentTask.description = document.getElementById("editDescription").value
+                currentTask.date = document.getElementById("editDate").value
+                currentTask.priority = projectStorage.editPriority()
+                currentProject.completedTasks.onchange = populateStorage()
+            }
+            currentProject.tasks.forEach(taskDisplay.display)
+            currentProject.completedTasks.forEach(taskDisplay.display)
+            projectStorage.editTaskPopUp.close()
+        })
         let deleteButton = document.createElement('button')
         deleteButton.textContent = "Delete"
         deleteButton.type = "submit"
@@ -183,8 +258,10 @@ const taskDisplay = {
             }
         currentProject.tasks.forEach(taskDisplay.display)
         currentProject.completedTasks.forEach(taskDisplay.display)
+        currentProject.tasks.onchange = populateStorage()
+        currentProject.completedTasks.onchange = populateStorage()
     })
-        taskContainer.append(taskName, taskDescription, taskDate,taskPriority, checkBoxCompletionLabel, checkBoxCompletion, deleteButton)
+        taskContainer.append(taskName, taskDescription, taskDate,taskPriority, checkBoxCompletionLabel, checkBoxCompletion, editButton, deleteButton)
         container.appendChild(taskContainer)
     }
 }

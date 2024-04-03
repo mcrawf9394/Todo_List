@@ -35,15 +35,36 @@
                 <label>Due Date</label>
                 <input required type="date" minlength="8" id="date">
                 <label>Priority</label>
-                <input required type="radio" id="highPriority" name="priority" value="highPriority">
+                <input required type="radio" id="highPriority" name="priority" value="High Priority">
                 <label>High Priority</label>
-                <input required type="radio" id="moderatePriority" name="priority" value="moderatePriority">
+                <input required type="radio" id="moderatePriority" name="priority" value="Moderate Priority">
                 <label>Moderate Priority</label>
-                <input required type="radio" id="lowPriority" name="priority" value="lowPriority">
+                <input required type="radio" id="lowPriority" name="priority" value="Low Priority">
                 <label>Low Priority</label>
                 <div id="taskButtons">
                     <button type="reset" id="cancelTaskAddition">Cancel</button>
                     <button type="submit" id="addTaskButton">Add Task</button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="editTask">
+            <form>
+                <label>Task Name</label>
+                <input required type="text" minlength="1" id="editTaskName">
+                <label>Description</label>
+                <input required type="text" minlength="1" id="editDescription">
+                <label>Due Date</label>
+                <input required type="date" minlength="8" id="editDate">
+                <label>Priority</label>
+                <input required type="radio" id="editHighPriority" name="editPriority" value="High Priority">
+                <label>High Priority</label>
+                <input required type="radio" id="editModeratePriority" name="editPriority" value="Moderate Priority">
+                <label>Moderate Priority</label>
+                <input required type="radio" id="editLowPriority" name="editPriority" value="Low Priority">
+                <label>Low Priority</label>
+                <div id="taskButtons">
+                    <button type="reset" id="cancelTaskEdit">Cancel</button>
+                    <button type="submit" id="editTaskButton">Edit Task</button>
                 </div>
             </form>
         </dialog>

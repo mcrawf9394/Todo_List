@@ -26,21 +26,37 @@ const display = {
         projects.forEach(this.addProject)
     },
     addProject (project) {
+        while (elements.taskArea.firstChild) {
+            elements.taskArea.removeChild(elements.taskArea.firstChild)
+        }
         const container = document.getElementById('projectContainer')
         projectName = project.name
         const projectTab = document.createElement('button')
         projectTab.className = "projectTabs"
         projectTab.textContent = projectName
+        projectTab.id = projectName
         const addTask = taskButtons.taskButton()
         container.appendChild(projectTab)
         const title = document.createElement('h2')
         title.textContent = projectName
+        const projectDeletion = document.createElement('button')
+        projectDeletion.textContent = "Delete Project"
+        projectDeletion.addEventListener('click', () => {
+            projectStorage.projectDeletion()
+            while (elements.taskArea.firstChild) {
+                elements.taskArea.removeChild(elements.taskArea.firstChild)
+            }
+            projectTab.remove()
+        })
+        const taskHeader = document.createElement('div')
+        taskHeader.id = "taskHeader"
+        taskHeader.append(title, projectDeletion)
         projectTab.addEventListener('click', () => {
             if (display.currentProject != projectTab.textContent){
                 while (elements.taskArea.firstChild) {
                 elements.taskArea.removeChild(elements.taskArea.firstChild)
             }
-                elements.taskArea.appendChild(title)
+                elements.taskArea.appendChild(taskHeader)
                 elements.taskArea.appendChild (addTask)
             }
             display.currentProject = projectTab.textContent
@@ -48,6 +64,13 @@ const display = {
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
         })
+        elements.taskArea.appendChild(taskHeader)
+        elements.taskArea.appendChild (addTask)
+        display.currentProject = projectName
+        let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
+        currentProject.tasks.forEach(taskDisplay.display)
+        currentProject.completedTasks.forEach(taskDisplay.display)
+        display.currentProject = projectName
         document.querySelector('dialog').close()
     }
 }
@@ -70,4 +93,3 @@ const reponsivebuttons = {
 }
 reponsivebuttons.clickResponses()
 display.intial()
-console.log(JSON.parse(localStorage.getItem("projects")))
