@@ -21,10 +21,13 @@ const display = {
         this.projectForm.close()
     },
     intial () {
-        if (getStorage()) {
+        if (getStorage().length > 0) {
         let projects = getStorage()
         projectStorage.projectArray = getStorage ()
         projects.forEach(this.addProject)
+        }
+        else {
+            return
         }
     },
     addProject (project) {
