@@ -35,12 +35,20 @@ const display = {
         projectTab.className = "projectTabs"
         projectTab.textContent = projectName
         projectTab.id = projectName
+        projectTab.addEventListener('mouseover', () => {
+            projectTab.className = "projectTabsHover"
+        })
+        projectTab.addEventListener('mouseout', () => {
+            projectTab.className = "projectTabs"
+        })
         const addTask = taskButtons.taskButton()
         container.appendChild(projectTab)
         const title = document.createElement('h2')
         title.textContent = projectName
+        title.id = "projectTitle"
         const projectDeletion = document.createElement('button')
         projectDeletion.textContent = "Delete Project"
+        projectDeletion.id = "projectDeletion"
         projectDeletion.addEventListener('click', () => {
             projectStorage.projectDeletion()
             while (elements.taskArea.firstChild) {
@@ -50,22 +58,22 @@ const display = {
         })
         const taskHeader = document.createElement('div')
         taskHeader.id = "taskHeader"
-        taskHeader.append(title, projectDeletion)
+        taskHeader.append(projectDeletion, addTask)
         projectTab.addEventListener('click', () => {
             if (display.currentProject != projectTab.textContent){
                 while (elements.taskArea.firstChild) {
                 elements.taskArea.removeChild(elements.taskArea.firstChild)
             }
-                elements.taskArea.appendChild(taskHeader)
-                elements.taskArea.appendChild (addTask)
+                elements.taskArea.appendChild(title)
+                elements.taskArea.appendChild (taskHeader)
             }
             display.currentProject = projectTab.textContent
             let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
             currentProject.tasks.forEach(taskDisplay.display)
             currentProject.completedTasks.forEach(taskDisplay.display)
         })
-        elements.taskArea.appendChild(taskHeader)
-        elements.taskArea.appendChild (addTask)
+        elements.taskArea.appendChild(title)
+        elements.taskArea.appendChild (taskHeader)
         display.currentProject = projectName
         let currentProject = projectStorage.projectArray.find(projectStorage.findingProject)
         currentProject.tasks.forEach(taskDisplay.display)
@@ -80,6 +88,12 @@ const reponsivebuttons = {
         elements.addProjectButton.addEventListener('click',(userEntry) => {
             userEntry.preventDefault() 
             display.addProjectButtonHandling()
+        })
+        elements.addProjectButton.addEventListener('mouseover', () => {
+            elements.addProjectButton.id = "addProjectHover"
+        })
+        elements.addProjectButton.addEventListener('mouseleave', () => {
+            elements.addProjectButton.id = "addProject"
         })
         elements.createProject.addEventListener('click', (userEntry) => {
             userEntry.preventDefault()
