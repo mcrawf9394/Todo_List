@@ -21,9 +21,11 @@ const display = {
         this.projectForm.close()
     },
     intial () {
+        if (getStorage()) {
         let projects = getStorage()
         projectStorage.projectArray = getStorage ()
         projects.forEach(this.addProject)
+        }
     },
     addProject (project) {
         while (elements.taskArea.firstChild) {
