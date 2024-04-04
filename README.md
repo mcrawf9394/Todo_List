@@ -1,1 +1,2 @@
 # Todo_List
+Todo List for the Odin Project, You can create projects and add tasks to the projects, you can delete everything, and edit the tasks. When the page is closed local storage will keep the information in the system.
